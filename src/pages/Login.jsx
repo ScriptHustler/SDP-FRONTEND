@@ -1,7 +1,26 @@
 import "../styles/Login.css";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import {login} from '../endpoints/api'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const navigate = useNavigate();
+
+  const handlelogin = async (e) => {
+    e.preventDefault();
+    const data = await login(username, password)
+    console.log(data)
+    if (data.success) {
+      navigate(`/${username}`)
+    }else {
+      alert('invalid username or password')
+    }
+  }
+
   return (
     <div className="login-page">
 
@@ -31,12 +50,13 @@ function Login() {
             <h2>Welcome Back</h2>
             <p>Please enter your details to access your dashboard.</p>
 
-            <form className="login-form">
+            <form onSubmit={handlelogin} className="login-form">
 
-              <label>Email Address</label>
+              <label>username</label>
               <input
-                type="email"
-                placeholder="student@university.edu"
+                type="text"
+                onChange={(e) => setUsername(e.target.value)} value={username}
+                placeholder="@university"
               />
 
               <div className="password-row">
@@ -45,10 +65,12 @@ function Login() {
               </div>
               <input
                 type="password"
+                onChange={(e) => setPassword(e.target.value)} value={password}
+
                 placeholder="••••••••"
               />
 
-              <button className="login-btn">
+              <button type="submit" className="login-btn">
                 Log In →
               </button>
 
